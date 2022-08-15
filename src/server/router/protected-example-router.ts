@@ -7,7 +7,7 @@ export const protectedExampleRouter = createProtectedRouter()
       return ctx.session;
     },
   })
-  .query("getSecretMessage", {
+  .query("getRepos", {
     resolve({ ctx }) {
       return "He who asks a question is a fool for five minutes; he who does not ask a question remains a fool forever.";
     },
