@@ -53,31 +53,45 @@ model User {
 model Project {
     id          Int     @id @default(autoincrement())
     name        String
-    repoId      Int  @unique
+    repoId      Int     @unique
     description String?
     Users       User[]
-    Tasks       Task[]
-    Todos       Todo[]
+    Board       Board[]
 }
 
 model Task {
     id          Int     @id @default(autoincrement())
     name        String
     description String?
-    Project     Project @relation(fields: [projectId], references: [id])
-    projectId   Int
     status      String
     statusColor String
+    Board       Board?  @relation(fields: [boardId], references: [id])
+    boardId     Int?
+}
+
+enum Type {
+    TASKS
+    TODOS
+}
+
+model Board {
+    id          Int     @id @default(autoincrement())
+    name        String
+    Project     Project @relation(fields: [projectId], references: [id])
+    projectId   Int
+    type        Type
+    Tasks       Task[]
+    Todos       Todo[]
 }
 
 model Todo {
     id          Int     @id @default(autoincrement())
     name        String
     description String?
-    Project     Project @relation(fields: [projectId], references: [id])
-    projectId   Int
     status      String
     statusColor String
+    Board       Board?  @relation(fields: [boardId], references: [id])
+    boardId     Int?
 }
 
 model VerificationToken {

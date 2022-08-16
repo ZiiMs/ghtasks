@@ -1,10 +1,8 @@
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
-  AiOutlineArrowLeft,
-  AiOutlineCaretDown,
-  AiOutlinePlus,
+  AiOutlineArrowLeft, AiOutlinePlus,
   AiOutlineSearch
 } from 'react-icons/ai';
 import { BiErrorCircle } from 'react-icons/bi';
@@ -24,10 +22,10 @@ const NewProject: React.FC = () => {
     },
   });
 
-  const { mutate } = trpc.useMutation(['repo.create'], {
+  const { mutate } = trpc.useMutation(['project.create'], {
     onSuccess: (data) => {
       console.log('SuccessMutation', data);
-      router.push('/repo/' + data.id);
+      router.push(`/repo/${ data.repoId}`);
     },
     onError: (error) => {
       console.log('ErrorMutation', error.message);
@@ -40,7 +38,7 @@ const NewProject: React.FC = () => {
   const [repos, setRepos] = useState(data ?? []);
   // const [focused, setFocused] = useState(false);
   const [selected, setSelected] = useState<number>(0);
-  const [error, setError] = useState('');
+  const [error, setError] = useState('e');
   const [stage, setStage] = useState<number>(0);
   const ref = useRef<HTMLDivElement>(null);
 

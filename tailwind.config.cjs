@@ -8,9 +8,35 @@ module.exports = {
           '0%, 100%': { transform: 'rotate(0deg)' },
           '50%': { transform: 'rotate(45deg)' },
         },
+        enter: {
+          from: {
+            opacity: 0,
+            transform: 'scale(0.5)',
+            transition: 'all 150ms',
+          },
+          to: {
+            opacity: 100,
+            transform: 'scale(1)',
+            transition: 'all 150ms',
+          },
+        },
+        leave: {
+          from: {
+            opacity: 100,
+            transform: 'scale(1)',
+            transition: 'all 150ms',
+          },
+          to: {
+            opacity: 0,
+            transform: 'scale(0.5)',
+            transition: 'all 150ms',
+          },
+        },
       },
       animation: {
         wiggle: 'wiggle 1400ms ease-in-out 1',
+        enter: 'enter 150ms linear 1 forwards',
+        leave: 'leave 150ms linear 1 forwards',
       },
     },
   },
