@@ -12,10 +12,6 @@ datasource db {
     referentialIntegrity = "prisma"
 }
 
-model Example {
-    id String @id @default(cuid())
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -51,6 +47,37 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    Project       Project[]
+}
+
+model Project {
+    id          Int     @id @default(autoincrement())
+    name        String
+    repoId      Int  @unique
+    description String?
+    Users       User[]
+    Tasks       Task[]
+    Todos       Todo[]
+}
+
+model Task {
+    id          Int     @id @default(autoincrement())
+    name        String
+    description String?
+    Project     Project @relation(fields: [projectId], references: [id])
+    projectId   Int
+    status      String
+    statusColor String
+}
+
+model Todo {
+    id          Int     @id @default(autoincrement())
+    name        String
+    description String?
+    Project     Project @relation(fields: [projectId], references: [id])
+    projectId   Int
+    status      String
+    statusColor String
 }
 
 model VerificationToken {
