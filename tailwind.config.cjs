@@ -3,6 +3,14 @@ module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      backgroundImage: {
+        'linear-gradient': {
+          'opacity': '1',
+          'background-image':
+            'linear-gradient(#444cf7 1.8px, transparent 1.8px), linear-gradient(to right, #444cf7 1.8px, #e5e5f7 1.8px)',
+          'background-size': '36px 36px',
+        },
+      },
       keyframes: {
         wiggle: {
           '0%, 100%': { transform: 'rotate(0deg)' },

@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
   const isLoading = status === 'loading';
 
   return (
-    <nav className='navbar bg-slate-900 flex flex-row items-center justify-between w-screen  px-4 py-2'>
+    <nav className='navbar bg-slate-900 flex flex-row items-center justify-between w-screen z-10 px-4 py-2'>
       <div className='flex h-full'>
         <Link href={'/'} passHref className='flex'>
           <button className='items-center gap-1 flex flex-shrink-0 h-full hover:bg-slate-800 px-2 rounded-md hover:text-red-600 focus:outline-2 focus:outline-red-500 focus:outline'>

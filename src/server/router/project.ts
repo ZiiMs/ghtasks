@@ -72,14 +72,15 @@ export const ProjectRouter = createProtectedRouter()
             repoId: input.repoId,
           },
           include: {
-            Board: true
+            Tasks: true,
+            Todos: true,
           }
         });
 
         return {
           ...repos,
-          Board: repos.Board?? [],
-
+          Tasks: repos.Tasks ?? [],
+          Todos: repos.Todos ?? []
         };
 
         // const {"0": Project, "1": Tasks, "2": Todos} = await Promise.all([repos, repos.Tasks(), repos.Todos()]);

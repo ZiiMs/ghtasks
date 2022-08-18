@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  /* body {
     @apply bg-slate-800;
-  }
+  } */
   html {
     @apply text-red-500
   }

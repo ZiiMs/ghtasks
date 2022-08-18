@@ -38,7 +38,7 @@ const NewProject: React.FC = () => {
   const [repos, setRepos] = useState(data ?? []);
   // const [focused, setFocused] = useState(false);
   const [selected, setSelected] = useState<number>(0);
-  const [error, setError] = useState('e');
+  const [error, setError] = useState('');
   const [stage, setStage] = useState<number>(0);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -167,7 +167,7 @@ const NewProject: React.FC = () => {
           </div>
         </div>
         {error !== '' && (
-          <div className='bg-[#E03131] bg-opacity-20 mt-2 py-3 px-4  rounded  divide-rose-600'>
+          <div className='bg-[#452B39] mt-2 py-3 px-4  rounded  divide-rose-600'>
             <div className='flex '>
               <div className='items-center content-center justify-start w-5 h-5 mr-4'>
                 <BiErrorCircle
