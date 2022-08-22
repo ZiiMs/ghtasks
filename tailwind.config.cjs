@@ -28,6 +28,16 @@ module.exports = {
             transition: 'all 150ms',
           },
         },
+        indicator: {
+          from: {
+            opacity: 0,
+            transform: 'scale(0)',
+          },
+          to: {
+            transform: 'scale(1)',
+           opacity: 1,
+          }
+        },
         leave: {
           from: {
             opacity: 100,
@@ -45,6 +55,7 @@ module.exports = {
         wiggle: 'wiggle 1400ms ease-in-out 1',
         enter: 'enter 150ms linear 1 forwards',
         leave: 'leave 150ms linear 1 forwards',
+        indicator: 'indicator 0.35s 2.5s cubic-bezier(.21,1.02,.73,1) forwards',
       },
     },
   },

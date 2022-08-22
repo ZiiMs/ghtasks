@@ -1,7 +1,5 @@
-import { NotFoundError } from '@prisma/client/runtime';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { paths } from '../../types/schema2';
 import { createProtectedRouter } from './protected-router';
 
 // Example router with queries that can only be hit if the user requesting is signed in
@@ -71,16 +69,10 @@ export const ProjectRouter = createProtectedRouter()
           where: {
             repoId: input.repoId,
           },
-          include: {
-            Tasks: true,
-            Todos: true,
-          }
         });
 
         return {
           ...repos,
-          Tasks: repos.Tasks ?? [],
-          Todos: repos.Todos ?? []
         };
 
         // const {"0": Project, "1": Tasks, "2": Todos} = await Promise.all([repos, repos.Tasks(), repos.Todos()]);
