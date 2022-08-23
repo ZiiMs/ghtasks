@@ -34,6 +34,12 @@ export const AssignmentRouter = createProtectedRouter()
       projectId: z.number(),
     }),
     async resolve({ ctx, input }) {
+      if (input.projectId === -1)
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Project ID is invalid.',
+          cause: input.projectId,
+        });
       try {
         const assignments = await ctx.prisma.assignments.findMany({
           where: {

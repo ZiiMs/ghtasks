@@ -26,17 +26,18 @@ const RepoTodos: React.FC = () => {
         Toasts.error({
           body: error.message,
         });
+        router.push('/');
       },
     }
   );
 
-  if (isLoading || !project) return <div>Loading...</div>;
   const { data: assignemnts } = trpc.useQuery([
     'assignments.get-all',
     {
-      projectId: project.id,
+      projectId: project?.id ?? -1,
     },
   ]);
+  if (isLoading || !project) return <div>Loading...</div>;
 
   return (
     <div className='flex flex-col gap-2 w-full h-full'>
