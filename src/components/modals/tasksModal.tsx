@@ -1,6 +1,9 @@
 import { trpc } from '@/utils/trpc';
 import { Type } from '@prisma/client';
+import classNames from 'classnames';
 import React, { useState } from 'react';
+import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
+import { FaGithub } from 'react-icons/fa';
 import Modal from '.';
 import Toasts from '../toasts';
 
@@ -10,8 +13,11 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('');
-  const [color, setColor] = useState('');
-  const [type, setType] = useState<Type>(Type.TASK);
+  const [color, setColor] = useState({
+    color: '',
+    variant: 0,
+  });
+  const [showColors, setShowColors] = useState(false);
 
   const client = trpc.useContext();
   const { mutate } = trpc.useMutation(['assignments.create'], {
@@ -30,6 +36,21 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
       onClose();
     },
   });
+  const colors = [
+    'slate',
+    'red',
+    'yellow',
+    'green',
+    'blue',
+    'indigo',
+    'purple',
+    'pink',
+  ];
+  const variants = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+  const getBgColor = (color: string, variant: number) => {
+    return `bg-${color}-${variant}`;
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -37,7 +58,7 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
         <h1 className='text-xl font-bold text-center'>Tasks Modal</h1>
         <div className='w-full border-t-[1px] border-solid mt-2 border-slate-800'></div>
         <div className='flex flex-row'>
-          <div className='flex flex-col p-2'>
+          <div className='flex flex-col  p-2'>
             <label>Name</label>
             <input
               value={name}
@@ -60,7 +81,7 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
             />
           </div>
         </div>
-        <div className='flex flex-row'>
+        <div className='flex relative flex-row'>
           <div className='flex flex-col p-2'>
             <label>Status</label>
             <input
@@ -72,16 +93,23 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
               className='p-1 text-sm bg-transparent rounded outline-1 outline-red-500 outline'
             />
           </div>
-          <div className='flex flex-col p-2'>
+
+          <div className='flex flex-col w-full p-2'>
             <label>StatusColor</label>
-            <input
-              value={color}
-              onChange={(e) => {
-                e.preventDefault();
-                setColor(e.target.value);
-              }}
-              className='p-1 text-sm bg-transparent rounded outline-1 outline-red-500 outline'
-            />
+            <button
+              className={classNames(
+                'px-2 py-1 rounded w-full h-full hover:bg-opacity-60',
+                color.color !== '' ? `bg-${color.color}-${color.variant}` : 'bg-slate-800',
+                color.variant >= 500 ? 'text-slate-300' : 'text-slate-800'
+              )}
+              onClick={() => setShowColors(true)}
+            >
+              <span
+                className={classNames('flex items-center justify-center gap-2')}
+              >
+                Status Color
+              </span>
+            </button>
           </div>
         </div>
         <div className='w-full border-t-[1px] border-solid mt-2 border-slate-800'></div>
@@ -99,7 +127,7 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
                 description,
                 name,
                 status,
-                statusColor: color,
+                statusColor: `${color.color}-${color.variant}`,
                 type: Type.TODO,
                 projectId: id,
               });
@@ -107,6 +135,37 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
           >
             Create
           </button>
+        </div>
+      </div>
+      <div className={classNames(showColors ? 'visible' : 'hidden', '')}>
+        <div
+          className={classNames(
+            `absolute shadow z-10 w-full bg-slate-900 p-2  mx-2 outline-2 outline-slate-700/75 outline-solid outline`,
+            `items-center top-0 left-full justify-center flex-shrink-0 rounded`
+          )}
+        >
+          <div className='grid grid-cols-8 w-full'>
+            {colors.map((color, d) => (
+              <div key={d}>
+                {variants.map((variant, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setColor({
+                        color,
+                        variant,
+                      });
+                      setShowColors(false);
+                    }}
+                    className={classNames(
+                      'w-[1.5rem] h-[1.5rem] rounded-full cursor-pointer hover:outline-2 hover:outline-solid hover:outline-slate-600/75 hover:outline',
+                      getBgColor(color, variant)
+                    )}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </Modal>

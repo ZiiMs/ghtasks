@@ -1,11 +1,21 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  safelist: [
+    {
+      pattern: /(bg|border)-(slate|red|yellow|green|blue|indigo|purple|pink)-(100|200|300|400|500|600|700|800|900)/,
+    }
+  ],
   theme: {
     extend: {
+      colors: {
+        user: {
+          assignment: 'var(--custom-assignment)',
+        },
+      },
       backgroundImage: {
         'linear-gradient': {
-          'opacity': '1',
+          opacity: '1',
           'background-image':
             'linear-gradient(#444cf7 1.8px, transparent 1.8px), linear-gradient(to right, #444cf7 1.8px, #e5e5f7 1.8px)',
           'background-size': '36px 36px',
@@ -35,8 +45,8 @@ module.exports = {
           },
           to: {
             transform: 'scale(1)',
-           opacity: 1,
-          }
+            opacity: 1,
+          },
         },
         leave: {
           from: {
