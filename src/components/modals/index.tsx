@@ -16,10 +16,10 @@ const Modal: React.FC<IModal> = ({ isOpen, onClose, children }) => {
       )}
     >
       <div
-        className='absolute inset-0 w-full h-full bg-slate-900 bg-opacity-20 '
+        className='absolute inset-0 bg-opacity-20 backdrop-blur-sm bg-slate-900 w-full h-full animate-modelBackdrop   '
         onClick={onClose}
       />
-      <section className='w-fit animate-enter bg-slate-900 rounded-lg z-50 min-w-[12rem] min-h-[6rem] h-fit'>
+      <section className='w-fit animate-enter bg-slate-900 rounded-lg z-50 min-w-[12rem] min-h-[6rem] h-fit ring-1 ring-slate-700/30'>
         {children}
       </section>
     </div>

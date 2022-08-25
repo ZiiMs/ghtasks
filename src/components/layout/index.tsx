@@ -7,18 +7,20 @@ import Navbar from './navbar';
 const Layout = ({ children }: PropsWithChildren<{}>) => {
   const parent = useRef(null);
   return (
-    <div className='min-h-screen h-screen min-w-screen w-screen overflow-hidden relative flex flex-col'>
-      <div ref={parent} className='flex flex-col h-full'>
+    <>
+      <div className='h-screen w-screen flex flex-col'>
+        <div className='absolute h-full -z-20 bg-slate-800 w-full ' />
+        <div
+          className={`absolute inset-0 h-full w-full -z-10 bg-[url(/img/grid.svg)] bg-center [mask-image:radial-gradient(rgba(241,245,249,0.1),rgba(148,163,184,1));]`}
+        />
         <Navbar />
-        <div className='absolute h-full bg-slate-800 w-full '/>
-        <div className={`absolute inset-0 bg-[url(/img/grid.svg)] bg-center [mask-image:radial-gradient(rgba(241,245,249,0.1),rgba(148,163,184,1));]`}/>
-        
-        <div className='h-full flex z-10 flex-col w-full p-4'>
-          {children}
+
+        <div className='container mx-auto'>
+          <div className='p-4 w-full h-full'>{children}</div>
+          <Toaster />
         </div>
-        <Toaster />
       </div>
-    </div>
+    </>
   );
 };
 

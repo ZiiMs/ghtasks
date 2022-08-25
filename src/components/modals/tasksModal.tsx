@@ -1,7 +1,7 @@
 import { trpc } from '@/utils/trpc';
 import { Type } from '@prisma/client';
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
 import { FaGithub } from 'react-icons/fa';
 import Modal from '.';
@@ -14,10 +14,12 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('');
   const [color, setColor] = useState({
-    color: '',
-    variant: 0,
+    color: 'slate',
+    variant: 800,
   });
   const [showColors, setShowColors] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const client = trpc.useContext();
   const { mutate } = trpc.useMutation(['assignments.create'], {
@@ -36,8 +38,26 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
       onClose();
     },
   });
+
+  useEffect(() => {
+    const bodyClick = (e: MouseEvent) => {
+      if (
+        ref.current?.contains(e.target as Node) ||
+        buttonRef.current?.contains(e.target as Node)
+      ) {
+        console.log('Clicked', buttonRef.current);
+        return;
+      }
+      setShowColors(false);
+    };
+    document.addEventListener('click', bodyClick);
+    return () => {
+      document.removeEventListener('click', bodyClick);
+    };
+  }, [showColors]);
+
   const colors = [
-    'slate',
+    'stone',
     'red',
     'yellow',
     'green',
@@ -94,13 +114,15 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
             />
           </div>
 
-          <div className='flex flex-col w-full p-2'>
-            <label>StatusColor</label>
+          <div className='flex flex-col items-end justify-end w-full p-2'>
             <button
+              ref={buttonRef}
               className={classNames(
-                'px-2 py-1 rounded w-full h-full hover:bg-opacity-60',
-                color.color !== '' ? `bg-${color.color}-${color.variant}` : 'bg-slate-800',
-                color.variant >= 500 ? 'text-slate-300' : 'text-slate-800'
+                'px-2 py-1 rounded w-full hover:bg-opacity-60',
+                color.color !== ''
+                  ? `bg-${color.color}-${color.variant}`
+                  : 'bg-slate-800',
+                color.variant <= 500 ? 'text-slate-800' : 'text-slate-300'
               )}
               onClick={() => setShowColors(true)}
             >
@@ -137,16 +159,18 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
           </button>
         </div>
       </div>
+      {showColors}
       <div className={classNames(showColors ? 'visible' : 'hidden', '')}>
         <div
           className={classNames(
             `absolute shadow z-10 w-full bg-slate-900 p-2  mx-2 outline-2 outline-slate-700/75 outline-solid outline`,
             `items-center top-0 left-full justify-center flex-shrink-0 rounded`
           )}
+          ref={ref}
         >
-          <div className='grid grid-cols-8 w-full'>
+          <div className='grid grid-cols-8 w-full '>
             {colors.map((color, d) => (
-              <div key={d}>
+              <div key={d} className='flex flex-col mx-auto gap-y-2'>
                 {variants.map((variant, i) => (
                   <button
                     key={i}
@@ -158,7 +182,8 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
                       setShowColors(false);
                     }}
                     className={classNames(
-                      'w-[1.5rem] h-[1.5rem] rounded-full cursor-pointer hover:outline-2 hover:outline-solid hover:outline-slate-600/75 hover:outline',
+                      'w-[1.5rem] h-[1.5rem] rounded-full cursor-pointer outline-2 outline-solid outline-black/75 outline',
+                      `hover:outline-${color}-${variant}/50`,
                       getBgColor(color, variant)
                     )}
                   />

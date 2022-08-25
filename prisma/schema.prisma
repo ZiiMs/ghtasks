@@ -69,7 +69,7 @@ model Assignments {
     name        String
     description String?
     status      String
-    statusColor String
+    statusColor String   @default("stone-100")
     type        Type     @default(TODO)
     Project     Project  @relation(fields: [projectId], references: [id])
     projectId   Int

@@ -3,7 +3,8 @@ module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   safelist: [
     {
-      pattern: /(bg|border)-(slate|red|yellow|green|blue|indigo|purple|pink)-(100|200|300|400|500|600|700|800|900)/,
+      pattern: /(bg|border|outline|text)-(stone|red|yellow|green|blue|indigo|purple|pink)-(100|200|300|400|500|600|700|800|900)/,
+      variants: ['hover']
     }
   ],
   theme: {
@@ -38,6 +39,16 @@ module.exports = {
             transition: 'all 150ms',
           },
         },
+        blurBackdrop: {
+          from: {
+            opacity: 0,
+            transition: 'all 150ms',
+          },
+          to: {
+            opacity: '20',
+            transition: 'all 150ms',
+          },
+        },
         indicator: {
           from: {
             opacity: 0,
@@ -65,6 +76,7 @@ module.exports = {
         wiggle: 'wiggle 1400ms ease-in-out 1',
         enter: 'enter 150ms linear 1 forwards',
         leave: 'leave 150ms linear 1 forwards',
+        modelBackdrop: 'blurBackdrop 150ms linear 1 forwards',
         indicator: 'indicator 0.35s 2.5s cubic-bezier(.21,1.02,.73,1) forwards',
       },
     },

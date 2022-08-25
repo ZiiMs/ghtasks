@@ -33,6 +33,14 @@ const RepoTodos: React.FC = () => {
     }
   );
 
+  const splitStatusColor = (statusColor: string) => {
+    const split = statusColor.split('-');
+    if (split.length === 2) {
+      return { color: split[0], variant: Number.parseInt(split[1] ?? 100) };
+    }
+    return { color: 'stone', variant: 100 };
+  };
+
   const getBorderColor = (assignment: Assignments) => {
     return `border-${assignment.statusColor}`;
   };
@@ -43,7 +51,18 @@ const RepoTodos: React.FC = () => {
       projectId: project?.id ?? -1,
     },
   ]);
-  if (isLoading || !project) return <div>Loading...</div>;
+  if (isLoading || !project)
+    return (
+      <div className=' flex flex-col items-center justify-center gap-2 h-full'>
+        <div
+          style={{
+            borderTopColor: 'transparent',
+          }}
+          className='w-12 h-12 border-4 items-center justify-center border-red-500 border-solid rounded-full animate-spin'
+        />
+        <span className='text-2xl '>Loading...</span>
+      </div>
+    );
 
   return (
     <div>
@@ -81,8 +100,25 @@ const RepoTodos: React.FC = () => {
                   'flex flex-col bg-slate-900 outline p-2 outline-slate-800 text-slate-300 outline-1 shadow-lg rounded-md hover:bg-black hover:bg-opacity-60 hover:cursor-pointer'
                 )}
               >
-                <div>{assignment.statusColor}</div>
-                <div>{assignment.name}</div>
+                <div className='flex items-start justify-between w-full'>
+                  <div>
+                    <div>{assignment.name}</div>
+                    <div>{assignment.description}</div>
+                  </div>
+                  <div className='flex flex-col items-end'>
+                    <div
+                      className={classNames(
+                        `rounded-md w-fit bg-${assignment.statusColor} font-bold px-2`,
+                        splitStatusColor(assignment.statusColor).variant >= 500
+                          ? `text-${splitStatusColor(assignment.statusColor).color}-200`
+                          : `text-${splitStatusColor(assignment.statusColor).color}-900`
+                      )}
+                    >
+                      {assignment.status}
+                    </div>
+                    <div>{assignment.updatedAt.toLocaleDateString()}</div>
+                  </div>
+                </div>
               </div>
             </div>
           ))}

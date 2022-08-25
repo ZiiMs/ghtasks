@@ -7,7 +7,7 @@ import Modal from '../modals';
 import TasksModal from '../modals/tasksModal';
 import Toasts from '../toasts';
 
-const NewTasksDropdown: React.FC<{id: number}> = ({id}) => {
+const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
   const [focused, setFocused] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [showTasksModal, setShowTasksModal] = useState(false);
@@ -98,9 +98,7 @@ const NewTasksDropdown: React.FC<{id: number}> = ({id}) => {
                     className={`hover:bg-red-500 select-none flex items-center gap-1 group hover:text-slate-900 px-1 py-1`}
                     onClick={(e) => {
                       e.preventDefault();
-                      Toasts.error({
-                        body: 'You have reached the maximum amount of boards',
-                      });
+
                       setFocused(false);
                       setShowTasksModal(true);
                       console.log('Settings !');
@@ -117,9 +115,7 @@ const NewTasksDropdown: React.FC<{id: number}> = ({id}) => {
                     className={`hover:bg-red-500 select-none flex items-center gap-1 group hover:text-slate-900 px-1 py-1`}
                     onClick={(e) => {
                       e.preventDefault();
-                      Toasts.error({
-                        body: 'You have reached the maximum amount of boards',
-                      });
+
                       setFocused(false);
                       setShowTodoModal(true);
                       console.log('Settings !');
