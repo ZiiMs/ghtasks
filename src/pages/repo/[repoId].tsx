@@ -36,7 +36,10 @@ const RepoTodos: React.FC = () => {
   const splitStatusColor = (statusColor: string) => {
     const split = statusColor.split('-');
     if (split.length === 2) {
-      return { color: split[0], variant: Number.parseInt(split[1] ?? 100) };
+      return {
+        color: split[0],
+        variant: split[1] ? Number.parseInt(split[1]) : 100,
+      };
     }
     return { color: 'stone', variant: 100 };
   };
@@ -110,8 +113,12 @@ const RepoTodos: React.FC = () => {
                       className={classNames(
                         `rounded-md w-fit bg-${assignment.statusColor} font-bold px-2`,
                         splitStatusColor(assignment.statusColor).variant >= 500
-                          ? `text-${splitStatusColor(assignment.statusColor).color}-200`
-                          : `text-${splitStatusColor(assignment.statusColor).color}-900`
+                          ? `text-${
+                              splitStatusColor(assignment.statusColor).color
+                            }-200`
+                          : `text-${
+                              splitStatusColor(assignment.statusColor).color
+                            }-900`
                       )}
                     >
                       {assignment.status}
