@@ -8,14 +8,14 @@ const Layout = ({ children }: PropsWithChildren<{}>) => {
   const parent = useRef(null);
   return (
     <>
-      <div className='h-screen w-screen flex flex-col'>
-        <div className='absolute h-full -z-20 bg-slate-800 w-full ' />
+      <div className='sm:h-auto md:h-screen w-full flex flex-col'>
+        <div className='fixed h-full -z-20 bg-slate-800 w-full ' />
         <div
-          className={`absolute inset-0 h-full w-full -z-10 bg-[url(/img/grid.svg)] bg-center [mask-image:radial-gradient(rgba(241,245,249,0.1),rgba(148,163,184,1));]`}
+          className={`fixed inset-0 h-full w-full -z-10 bg-[url(/img/grid.svg)] bg-center [mask-image:radial-gradient(rgba(241,245,249,0.1),rgba(148,163,184,1));]`}
         />
         <Navbar />
 
-        <div className='container mx-auto'>
+        <div className='container mx-auto h-full w-full'>
           <div className='p-4 w-full h-full'>{children}</div>
           <Toaster />
         </div>

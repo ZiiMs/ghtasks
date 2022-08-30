@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
   const isLoading = status === 'loading';
 
   return (
-    <nav className='navbar bg-slate-900 '>
+    <nav className='navbar bg-slate-900 w-full '>
       <div className='container flex flex-row items-center justify-between h-full w-full z-10 px-4 py-2 mx-auto'>
         <div className='flex h-full'>
           <Link href={'/'} passHref className='flex'>

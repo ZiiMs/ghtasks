@@ -1,14 +1,19 @@
+import Loading from '@/components/loading';
 import NewTasksDropdown from '@/components/NewButton';
 import Toasts from '@/components/toasts';
 import { trpc } from '@/utils/trpc';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Assignments } from '@prisma/client';
 import classNames from 'classnames';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { FaGithub } from 'react-icons/fa';
 
 const RepoTodos: React.FC = () => {
   const client = trpc.useContext();
   const router = useRouter();
+  const [parent] = useAutoAnimate<HTMLDivElement>();
   const [filter, setFilter] = useState('');
   const { repoId } = router.query;
 
@@ -54,36 +59,62 @@ const RepoTodos: React.FC = () => {
       projectId: project?.id ?? -1,
     },
   ]);
-  if (isLoading || !project)
-    return (
-      <div className=' flex flex-col items-center justify-center gap-2 h-full'>
-        <div
-          style={{
-            borderTopColor: 'transparent',
-          }}
-          className='w-12 h-12 border-4 items-center justify-center border-red-500 border-solid rounded-full animate-spin'
-        />
-        <span className='text-2xl '>Loading...</span>
-      </div>
-    );
+  if (isLoading || !project) return <Loading />;
 
   return (
     <div>
       <div className='flex flex-col gap-2 w-full h-full'>
         <div className='justify-between flex'>
-          <h1 className='text-2xl font-bold'>{project.name}</h1>
+          <h1 className='text-2xl font-bold flex items-center justify-center'>
+            <span className='items-center justify-center text-center'>
+              {project.name}
+            </span>
+            <Link href={`https://github.com/${project.name}`} passHref>
+              <a
+                className='p-1 mx-2 bg-slate-900 flex rounded hover:bg-opacity-60'
+                target='_blank'
+              >
+                <FaGithub />
+              </a>
+            </Link>
+          </h1>
           <div className='select-none rounded-md self-center justify-center flex flex-row disabled:bg-opacity-25 disabled:cursor-not-allowed disabled:text-red-500/25 '>
             <button
-              className={`px-2 py-1 hover:cursor-pointer border-r-[1px] border-red-500 bg-slate-900 hover:bg-opacity-60 rounded-l-md ${
-                filter !== '' && 'bg-red-500 text-slate-900'
+              className={`px-2 py-1 hover:cursor-pointer border-r-[1px] border-red-500  hover:bg-opacity-60 rounded-l-md ${
+                filter !== '' ? 'bg-red-500 text-slate-900' : 'bg-slate-900'
               } font-medium`}
             >
               Filter
             </button>
-            <button className='px-2 py-1 bg-slate-900 hover:cursor-pointer hover:bg-opacity-60 border-r-[1px] border-red-500 focus:bg-red-500 focus:text-slate-900 font-medium '>
+            <button
+              className={classNames(
+                'px-2 py-1 hover:cursor-pointer hover:bg-opacity-60 border-r-[1px] border-red-500  font-medium',
+                filter === 'todo'
+                  ? 'bg-red-500 text-slate-900'
+                  : 'text-red-500 bg-slate-900'
+              )}
+              onClick={(e) => {
+                e.preventDefault();
+                if (filter === 'todo') {
+                  setFilter('');
+                } else {
+                  setFilter('todo');
+                }
+              }}
+            >
               Tasks
             </button>
-            <button className='px-2 py-1 bg-slate-900 hover:cursor-pointer hover:bg-opacity-60 rounded-r-md focus:bg-red-500 focus:text-slate-900 font-medium'>
+            <button
+              className='px-2 py-1 bg-slate-900 hover:cursor-pointer hover:bg-opacity-60 rounded-r-md focus:bg-red-500 focus:text-slate-900 font-medium'
+              onClick={(e) => {
+                e.preventDefault();
+                if (filter === 'task') {
+                  setFilter('');
+                } else {
+                  setFilter('task');
+                }
+              }}
+            >
               Todos
             </button>
           </div>
@@ -93,41 +124,47 @@ const RepoTodos: React.FC = () => {
         </div>
         <div className='flex flex-col items-start justify-start h-full'>
           {assignemnts?.map((assignment) => (
-            <div
-              key={assignment.id}
-              className={classNames('w-full h-full p-1')}
-            >
-              <div
-                className={classNames(
-                  ` border-l-4 ${getBorderColor(assignment)} `,
-                  'flex flex-col bg-slate-900 outline p-2 outline-slate-800 text-slate-300 outline-1 shadow-lg rounded-md hover:bg-black hover:bg-opacity-60 hover:cursor-pointer'
-                )}
-              >
-                <div className='flex items-start justify-between w-full'>
-                  <div>
-                    <div>{assignment.name}</div>
-                    <div>{assignment.description}</div>
-                  </div>
-                  <div className='flex flex-col items-end'>
-                    <div
-                      className={classNames(
-                        `rounded-md w-fit bg-${assignment.statusColor} font-bold px-2`,
-                        splitStatusColor(assignment.statusColor).variant >= 500
-                          ? `text-${
-                              splitStatusColor(assignment.statusColor).color
-                            }-200`
-                          : `text-${
-                              splitStatusColor(assignment.statusColor).color
-                            }-900`
-                      )}
-                    >
-                      {assignment.status}
+            <>
+              {assignment.type.toLowerCase() === filter ? null : (
+                <div
+                  key={assignment.id}
+                  ref={parent}
+                  className={classNames('w-full h-full p-1')}
+                >
+                  <div
+                    className={classNames(
+                      ` border-l-4 ${getBorderColor(assignment)} `,
+                      'flex flex-col bg-slate-900 outline p-2 outline-slate-800 text-slate-300 outline-1 shadow-lg rounded-md hover:bg-black hover:bg-opacity-60 hover:cursor-pointer'
+                    )}
+                  >
+                    <div className='flex items-start justify-between w-full'>
+                      <div>
+                        <div>{assignment.name}</div>
+                        <div>{assignment.description}</div>
+                      </div>
+                      <div className='flex flex-col items-end'>
+                        <div
+                          className={classNames(
+                            `rounded-md w-fit bg-${assignment.statusColor} font-bold px-2`,
+                            splitStatusColor(assignment.statusColor).variant >=
+                              500
+                              ? `text-${
+                                  splitStatusColor(assignment.statusColor).color
+                                }-200`
+                              : `text-${
+                                  splitStatusColor(assignment.statusColor).color
+                                }-900`
+                          )}
+                        >
+                          {assignment.status}
+                        </div>
+                        <div>{assignment.updatedAt.toLocaleDateString()}</div>
+                      </div>
                     </div>
-                    <div>{assignment.updatedAt.toLocaleDateString()}</div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </>
           ))}
         </div>
       </div>

@@ -1,3 +1,4 @@
+import Loading from '@/components/loading';
 import type { NextPage } from 'next';
 import { getSession, useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -25,36 +26,25 @@ const Home: NextPage = () => {
     },
   });
 
-  if (isLoading)
-    return (
-      <div className=' flex flex-col items-center justify-center gap-2 h-full'>
-        <div
-          style={{
-            borderTopColor: 'transparent',
-          }}
-          className='w-12 h-12 border-4 items-center justify-center border-red-500 border-solid rounded-full animate-spin'
-        />
-        <span className='text-2xl '>Loading...</span>
-      </div>
-    );
+  if (isLoading) return <Loading />;
 
   return (
     <>
       {projects && projects.length > 0 ? (
         <div
-          className={` min-h-0 flex-1 w-full h-full grid grid-cols-6 grid-rows-6 gap-2`}
+          className={` min-h-0 flex-1 w-full h-full grid grid-cols-6 grid-rows-6 gap-2 items-center justify-center`}
         >
           {projects.map((project) => (
             <div
               key={project.id}
               className={`col-auto ${
                 projects.length > 6 ? 'row-auto' : 'row-start-3'
-              } h-full flex p-1`}
+              } h-full flex p-1 w-full `}
             >
               <Link passHref href={`/repo/${project.repoId}`}>
-                <div className='flex flex-1 flex-col bg-slate-900 outline p-2 outline-slate-600 text-slate-300 outline-2 rounded-md hover:bg-black hover:bg-opacity-60 hover:cursor-pointer'>
-                  <div>{project.name}</div>
-                  <div>{project.description}</div>
+                <div className='flex flex-1 flex-col bg-slate-900 overflow-x-hidden overflow-ellipsis outline p-2 outline-slate-600 text-slate-300 outline-2 rounded-md hover:bg-black hover:bg-opacity-60 hover:cursor-pointer'>
+                  <div className=''>{project.name}</div>
+                  <div className='overflow-ellipsis'>{project.description}</div>
                 </div>
               </Link>
             </div>
