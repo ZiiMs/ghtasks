@@ -1,17 +1,18 @@
 import { ProjectRouter } from '@/server/router/project';
+import { Type } from '@prisma/client';
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
 import { FaArrowCircleDown, FaGithub } from 'react-icons/fa';
 import Modal from '../modals';
-import TasksModal from '../modals/tasksModal';
+import CreateModal from '../modals/createModal';
 import Toasts from '../toasts';
 
 const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
   const [focused, setFocused] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const [showTasksModal, setShowTasksModal] = useState(false);
-  const [showTodoModal, setShowTodoModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [type, setType] = useState<Type>(Type.TASK);
 
   useEffect(() => {
     const bodyClick = (e: MouseEvent) => {
@@ -28,14 +29,13 @@ const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
   });
   return (
     <>
-      <TasksModal
-        isOpen={showTasksModal}
-        onClose={() => setShowTasksModal(false)}
+      <CreateModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
         id={id}
+        type={type}
       />
-      <Modal isOpen={showTodoModal} onClose={() => setShowTodoModal(false)}>
-        <div>Todos!?</div>
-      </Modal>
+
       <div className='relative' ref={ref}>
         <button
           className={classNames(
@@ -100,7 +100,9 @@ const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
                       e.preventDefault();
 
                       setFocused(false);
-                      setShowTasksModal(true);
+                      setType(Type.TASK);
+                      setShowModal(true);
+
                       console.log('Settings !');
                     }}
                   >
@@ -117,7 +119,8 @@ const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
                       e.preventDefault();
 
                       setFocused(false);
-                      setShowTodoModal(true);
+                      setType(Type.TODO);
+                      setShowModal(true);
                       console.log('Settings !');
                     }}
                   >

@@ -1,4 +1,4 @@
-import { Type } from '@prisma/client';
+import { Status, Type } from '@prisma/client';
 import { NotFoundError } from '@prisma/client/runtime';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
@@ -62,11 +62,12 @@ export const AssignmentRouter = createProtectedRouter()
       name: z.string(),
       projectId: z.number(),
       description: z.string(),
-      status: z.string(),
+      status: z.nativeEnum(Status),
       statusColor: z.string(),
       type: z.nativeEnum(Type),
     }),
     async resolve({ ctx, input }) {
+      console.log(input);
       try {
         const assignment = await ctx.prisma.assignments.create({
           data: {
@@ -75,6 +76,7 @@ export const AssignmentRouter = createProtectedRouter()
             description: input.description || null,
             status: input.status,
             statusColor: input.statusColor,
+            type: input.type,
           },
         });
         return assignment;

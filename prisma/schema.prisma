@@ -17,6 +17,17 @@ enum Type {
     TASK
 }
 
+enum Status {
+    OPEN        @map("Open")
+    CLOSED      @map("Closed")
+    BUG         @map("Bug")
+    ENHANCEMENT @map("Enhancement")
+    INVALID     @map("Invalid")
+    QUESTION    @map("Question")
+    INPROGRESS  @map("In Progress")
+    NOTSTARTED  @map("Not Started")
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -68,7 +79,7 @@ model Assignments {
     id          Int      @id @default(autoincrement())
     name        String
     description String?
-    status      String
+    status      Status   @default(OPEN)
     statusColor String   @default("stone-100")
     type        Type     @default(TODO)
     Project     Project  @relation(fields: [projectId], references: [id])

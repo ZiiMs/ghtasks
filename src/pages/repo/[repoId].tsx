@@ -1,6 +1,7 @@
 import Loading from '@/components/loading';
 import NewTasksDropdown from '@/components/NewButton';
 import Toasts from '@/components/toasts';
+import { formatStatus } from '@/utils/functions';
 import { trpc } from '@/utils/trpc';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Assignments } from '@prisma/client';
@@ -105,7 +106,12 @@ const RepoTodos: React.FC = () => {
               Tasks
             </button>
             <button
-              className='px-2 py-1 bg-slate-900 hover:cursor-pointer hover:bg-opacity-60 rounded-r-md focus:bg-red-500 focus:text-slate-900 font-medium'
+              className={classNames(
+                'px-2 py-1 hover:cursor-pointer rounded-r-md hover:bg-opacity-60 font-medium',
+                filter === 'task'
+                  ? 'bg-red-500 text-slate-900'
+                  : 'text-red-500 bg-slate-900'
+              )}
               onClick={(e) => {
                 e.preventDefault();
                 if (filter === 'task') {
@@ -156,7 +162,7 @@ const RepoTodos: React.FC = () => {
                                 }-900`
                           )}
                         >
-                          {assignment.status}
+                          {formatStatus(assignment.status)}
                         </div>
                         <div>{assignment.updatedAt.toLocaleDateString()}</div>
                       </div>

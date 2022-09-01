@@ -1,21 +1,35 @@
+import { formatStatus } from '@/utils/functions';
 import { trpc } from '@/utils/trpc';
-import { Type } from '@prisma/client';
+import { Status, Type } from '@prisma/client';
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
 import { FaGithub } from 'react-icons/fa';
+import { z } from 'zod';
 import Modal from '.';
 import Toasts from '../toasts';
 
-type Modal = { isOpen: boolean; onClose: () => void; id: number };
+type Modal = { isOpen: boolean; onClose: () => void; id: number; type: Type };
 
-const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [status, setStatus] = useState('');
-  const [color, setColor] = useState({
-    color: 'slate',
-    variant: 800,
+const CreateModal: React.FC<Modal> = ({ isOpen, onClose, id, type }) => {
+  const AssignmentSchema = z.object({
+    name: z.string().min(1),
+    description: z.string(),
+    status: z.nativeEnum(Status),
+    statusColor: z.object({
+      color: z.string(),
+      variant: z.number(),
+    }),
+  });
+  type Assignment = z.infer<typeof AssignmentSchema>;
+  const [form, setForm] = useState<Assignment>({
+    name: '',
+    description: '',
+    status: 'OPEN',
+    statusColor: {
+      color: '',
+      variant: 800,
+    },
   });
   const [showColors, setShowColors] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -35,7 +49,19 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
         title: 'Success',
         body: `${data.type.toLocaleLowerCase()} created: ${data.name}`,
       });
+      setForm({
+        name: '',
+        description: '',
+        status: 'OPEN',
+        statusColor: {
+          color: '',
+          variant: 800,
+        },
+      });
       onClose();
+    },
+    onError: (err) => {
+      console.log(err);
     },
   });
 
@@ -56,6 +82,8 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
     };
   }, [showColors]);
 
+
+
   const colors = [
     'stone',
     'red',
@@ -72,19 +100,25 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
     return `bg-${color}-${variant}`;
   };
 
+  const getStatusKeys = () => {
+    return Object.keys(Status) as Array<keyof typeof Status>;
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className='flex flex-col w-full h-full'>
-        <h1 className='text-xl font-bold text-center'>Tasks Modal</h1>
+        <h1 className='text-xl font-bold text-center'>
+          {type === Type.TASK ? 'Task ' : 'Todo '}Modal
+        </h1>
         <div className='w-full border-t-[1px] border-solid mt-2 border-slate-800'></div>
         <div className='flex flex-row'>
           <div className='flex flex-col  p-2'>
             <label>Name</label>
             <input
-              value={name}
+              value={form.name}
               onChange={(e) => {
                 e.preventDefault();
-                setName(e.target.value);
+                setForm({ ...form, name: e.target.value });
               }}
               className='p-1 text-sm bg-transparent rounded outline-1 outline-red-500 outline'
             />
@@ -92,10 +126,10 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
           <div className='flex flex-col p-2'>
             <label>Desciption</label>
             <input
-              value={description}
+              value={form.description}
               onChange={(e) => {
                 e.preventDefault();
-                setDescription(e.target.value);
+                setForm({ ...form, description: e.target.value });
               }}
               className='p-1 text-sm bg-transparent rounded outline-1 outline-red-500 outline'
             />
@@ -104,14 +138,24 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
         <div className='flex relative flex-row'>
           <div className='flex flex-col p-2'>
             <label>Status</label>
-            <input
-              value={status}
+            <select
+              value={form.status}
               onChange={(e) => {
                 e.preventDefault();
-                setStatus(e.target.value);
+                console.log(e.target.value);
+                setForm({
+                  ...form,
+                  status: Status[e.target.value as keyof typeof Status],
+                });
               }}
-              className='p-1 text-sm bg-transparent rounded outline-1 outline-red-500 outline'
-            />
+              className='p-1 text-sm bg-transparent rounded outline-1 border-slate-700 outline-red-500 outline'
+            >
+              {getStatusKeys().map((key) => (
+                <option className='bg-slate-900 ' key={key} value={Status[key]}>
+                  {formatStatus(Status[key])}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className='flex flex-col items-end justify-end w-full p-2'>
@@ -119,10 +163,12 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
               ref={buttonRef}
               className={classNames(
                 'px-2 py-1 rounded w-full hover:bg-opacity-60',
-                color.color !== ''
-                  ? `bg-${color.color}-${color.variant}`
+                form.statusColor.color !== ''
+                  ? `bg-${form.statusColor.color}-${form.statusColor.variant}`
                   : 'bg-slate-800',
-                color.variant <= 500 ? 'text-slate-800' : 'text-slate-300'
+                form.statusColor.variant <= 500
+                  ? 'text-slate-800'
+                  : 'text-slate-300'
               )}
               onClick={() => setShowColors(true)}
             >
@@ -145,12 +191,30 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
           <button
             className='px-2 py-1 hover:bg-slate-700 rounded bg-slate-800'
             onClick={() => {
+              const error = AssignmentSchema.safeParse(form);
+              if (!error.success) {
+                Toasts.error({
+                  title: 'Error creating assignment',
+                  body: `Error: ${error.error.issues[0]?.message} at ${error.error.issues[0]?.path[0]} `,
+                });
+                console.log(error.error.message);
+                return;
+              }
+              const { description, name, status, statusColor } = form;
+              console.log(
+                description,
+                name,
+                status,
+                `${statusColor.color}-${statusColor.variant}`,
+                type,
+                id
+              );
               mutate({
                 description,
                 name,
                 status,
-                statusColor: `${color.color}-${color.variant}`,
-                type: Type.TODO,
+                statusColor: `${statusColor.color}-${statusColor.variant}`,
+                type: type,
                 projectId: id,
               });
             }}
@@ -175,9 +239,12 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
                   <button
                     key={i}
                     onClick={() => {
-                      setColor({
-                        color,
-                        variant,
+                      setForm({
+                        ...form,
+                        statusColor: {
+                          color,
+                          variant,
+                        },
                       });
                       setShowColors(false);
                     }}
@@ -197,5 +264,5 @@ const TasksModal: React.FC<Modal> = ({ isOpen, onClose, id }) => {
   );
 };
 
-export default TasksModal;
+export default CreateModal;
 
