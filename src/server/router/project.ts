@@ -36,6 +36,29 @@ export const ProjectRouter = createProtectedRouter()
       }
     },
   })
+  .mutation('delete', {
+    input: z.object({
+      id: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      console.log('input', input);
+      try {
+        const repo = await ctx.prisma.project.delete({
+          where: {
+            id: input.id,
+          },
+        });
+        return repo;
+      } catch (e) {
+        console.error(e);
+        throw new TRPCError({
+          code: 'PARSE_ERROR',
+          message: 'Error deleteing repo',
+          cause: e,
+        });
+      }
+    },
+  })
   .query('get-all', {
     async resolve({ ctx }) {
       try {

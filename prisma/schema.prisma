@@ -71,8 +71,8 @@ model Project {
     name        String
     repoId      Int           @unique
     description String?
-    Users       User[]
-    Assignments Assignments[]
+    Users       User[] 
+    Assignments Assignments[] 
 }
 
 model Assignments {
@@ -82,7 +82,7 @@ model Assignments {
     status      Status   @default(OPEN)
     statusColor String   @default("stone-100")
     type        Type     @default(TODO)
-    Project     Project  @relation(fields: [projectId], references: [id])
+    Project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
     projectId   Int
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt

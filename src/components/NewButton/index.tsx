@@ -3,7 +3,8 @@ import { Type } from '@prisma/client';
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
-import { FaArrowCircleDown, FaGithub } from 'react-icons/fa';
+import { BiTask } from 'react-icons/bi';
+import { FaArrowCircleDown, FaGithub, FaTasks } from 'react-icons/fa';
 import Modal from '../modals';
 import CreateModal from '../modals/createModal';
 import Toasts from '../toasts';
@@ -106,7 +107,7 @@ const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
                       console.log('Settings !');
                     }}
                   >
-                    <FaGithub className='group-hover:animate-wiggle' />
+                    <BiTask className='group-hover:animate-wiggle' />
                     Tasks
                   </div>
                 </div>
@@ -124,7 +125,7 @@ const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
                       console.log('Settings !');
                     }}
                   >
-                    <FaGithub className='group-hover:animate-wiggle' />
+                    <FaTasks className='group-hover:animate-wiggle' />
                     Todos
                   </div>
                 </div>

@@ -3,9 +3,10 @@ module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   safelist: [
     {
-      pattern: /(bg|border|outline|text)-(stone|red|yellow|green|blue|indigo|purple|pink)-(100|200|300|400|500|600|700|800|900)/,
-      variants: ['hover']
-    }
+      pattern:
+        /(bg|border|outline|text)-(stone|red|yellow|green|blue|indigo|purple|pink)-(100|200|300|400|500|600|700|800|900)/,
+      variants: ['hover'],
+    },
   ],
   theme: {
     extend: {
@@ -79,6 +80,12 @@ module.exports = {
         modelBackdrop: 'blurBackdrop 150ms linear 1 forwards',
         indicator: 'indicator 0.35s 2.5s cubic-bezier(.21,1.02,.73,1) forwards',
       },
+    },
+  },
+  variants: {
+    extend: {
+      backgroundColor: ['disabled'],
+      textColor: ['disabled'],
     },
   },
   plugins: [require('tailwind-scrollbar')],
