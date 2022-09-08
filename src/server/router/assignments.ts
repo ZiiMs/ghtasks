@@ -89,5 +89,28 @@ export const AssignmentRouter = createProtectedRouter()
         });
       }
     },
+  })
+  .mutation('delete', {
+    input: z.object({
+      id: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      console.log(input);
+      try {
+        const assignment = await ctx.prisma.assignments.delete({
+          where: {
+            id: input.id,
+          },
+        });
+        return assignment;
+      } catch (e) {
+        console.log(e);
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'assignment failed to delete',
+          cause: e,
+        });
+      }
+    },
   });
 

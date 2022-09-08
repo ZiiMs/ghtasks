@@ -39,11 +39,13 @@ const Home: NextPage = () => {
               key={project.id}
               className={`col-auto ${
                 projects.length > 6 ? 'row-auto' : 'row-start-3'
-              } h-full flex p-1 w-full `}
+              } flex p-1 h-full `}
             >
               <Link passHref href={`/repo/${project.repoId}`}>
-                <div className='flex flex-1 flex-col bg-slate-900 overflow-x-hidden overflow-ellipsis outline p-2 outline-slate-600 text-slate-300 outline-2 rounded-md hover:bg-black hover:bg-opacity-60 hover:cursor-pointer'>
-                  <div className=''>{project.name}</div>
+                <div className='flex flex-1 flex-col bg-slate-900 overflow-x-hidden overflow-ellipsis outline p-2 outline-red-500/50 outline-2 rounded-md hover:bg-black hover:bg-opacity-60 hover:cursor-pointer'>
+                  <div className='self-center font-semibold'>
+                    {project.name}
+                  </div>
                   <div className='overflow-ellipsis'>{project.description}</div>
                 </div>
               </Link>

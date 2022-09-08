@@ -1,3 +1,4 @@
+import ContextMenu from '@/components/contextMenu';
 import Loading from '@/components/loading';
 import Modal from '@/components/modals';
 import NewTasksDropdown from '@/components/NewButton';
@@ -5,20 +6,29 @@ import Toasts from '@/components/toasts';
 import { formatStatus } from '@/utils/functions';
 import { trpc } from '@/utils/trpc';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { Assignments, Type } from '@prisma/client';
+import { Assignments } from '@prisma/client';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import { AiFillCaretUp } from 'react-icons/ai';
-import { BiTask } from 'react-icons/bi';
-import { FaGithub, FaTasks } from 'react-icons/fa';
+import { FaGithub } from 'react-icons/fa';
 import { FiChevronDown } from 'react-icons/fi';
 import { MdDeleteForever } from 'react-icons/md';
 
 const RepoTodos: React.FC = () => {
   const client = trpc.useContext();
   const [focused, setFocused] = useState(false);
+  const [menuInfo, setMenuInfo] = useState<{
+    x: number;
+    y: number;
+    selected: number | null;
+    showMenu: boolean;
+  }>({
+    x: 0,
+    y: 0,
+    selected: null,
+    showMenu: false,
+  });
   const ref = useRef<HTMLButtonElement>(null);
   const [showModal, setShowModal] = useState(false);
   const [confirmInput, setConfirmInput] = useState('');
@@ -45,6 +55,24 @@ const RepoTodos: React.FC = () => {
       });
     },
   });
+
+  const { mutate: deleteAssignment, isLoading: isTryingDeleteAssignment } =
+    trpc.useMutation(['assignments.delete'], {
+      onSuccess: (data) => {
+        client.invalidateQueries(['assignments.get-all']);
+        client.invalidateQueries(['assignments.get']);
+        Toasts.success({
+          title: 'Assignment deleted',
+          body: `Assignment ${data.name} successfully deleted.`,
+        });
+      },
+      onError: (err) => {
+        Toasts.error({
+          title: 'Failed to delete assignment',
+          body: err.message,
+        });
+      },
+    });
 
   const { data: project, isLoading } = trpc.useQuery(
     [
@@ -218,13 +246,23 @@ const RepoTodos: React.FC = () => {
                   <div
                     key={assignment.id}
                     ref={parent}
-                    className={classNames('w-full h-full p-1')}
+                    className={classNames('relative w-full h-full p-1')}
                   >
                     <div
                       className={classNames(
                         ` border-l-4 ${getBorderColor(assignment)} `,
                         'flex flex-col bg-slate-900 outline p-2 outline-slate-800 text-slate-300 outline-1 shadow-lg rounded-md hover:bg-black hover:bg-opacity-60 hover:cursor-pointer'
                       )}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        setMenuInfo({
+                          showMenu: true,
+                          x: e.pageX,
+                          y: e.pageY,
+                          selected: assignment.id,
+                        });
+                        console.log(menuInfo);
+                      }}
                     >
                       <div className='flex items-start justify-between w-full'>
                         <div>
@@ -308,6 +346,53 @@ const RepoTodos: React.FC = () => {
           </div>
         </div>
       </Modal>
+      <ContextMenu
+        toggleMenu={() =>
+          setMenuInfo({ ...menuInfo, showMenu: false, selected: null })
+        }
+        showMenu={menuInfo.showMenu}
+        x={menuInfo.x}
+        y={menuInfo.y}
+      >
+        <ul className='divide-y-[1px] divide-red-500 divide select-none cursor-pointer'>
+          <li>
+            <button
+              disabled={isTryingDeleteAssignment}
+              className='px-2 py-2 w-full h-full hover:bg-slate-700/40 disabled:outline-red-500/50 disabled:bg-transparent disabled:text-red-500/50 disabled:cursor-not-allowed'
+              onClick={(e) => {
+                e.preventDefault();
+                if (menuInfo.selected === null) {
+                  return;
+                }
+
+                setMenuInfo({ ...menuInfo, showMenu: false, selected: null });
+                console.log('Delete');
+              }}
+            >
+              Edit
+            </button>
+          </li>
+          <li>
+            <button
+              disabled={isTryingDeleteAssignment}
+              className='px-2 py-2 w-full h-full hover:bg-slate-700/40 disabled:outline-red-500/50 disabled:bg-transparent disabled:text-red-500/50 disabled:cursor-not-allowed'
+              onClick={(e) => {
+                e.preventDefault();
+                if (menuInfo.selected === null) {
+                  return;
+                }
+                deleteAssignment({
+                  id: menuInfo.selected,
+                });
+                setMenuInfo({ ...menuInfo, showMenu: false, selected: null });
+                console.log('Delete');
+              }}
+            >
+              Delete
+            </button>
+          </li>
+        </ul>
+      </ContextMenu>
     </>
   );
 };

@@ -36,7 +36,7 @@ const CreateModal: React.FC<Modal> = ({ isOpen, onClose, id, type }) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const client = trpc.useContext();
-  const { mutate } = trpc.useMutation(['assignments.create'], {
+  const { mutate, isLoading } = trpc.useMutation(['assignments.create'], {
     onSuccess: (data) => {
       console.log(data);
       client.invalidateQueries([
@@ -81,8 +81,6 @@ const CreateModal: React.FC<Modal> = ({ isOpen, onClose, id, type }) => {
       document.removeEventListener('click', bodyClick);
     };
   }, [showColors]);
-
-
 
   const colors = [
     'stone',
@@ -189,7 +187,7 @@ const CreateModal: React.FC<Modal> = ({ isOpen, onClose, id, type }) => {
             Close
           </button>
           <button
-            className='px-2 py-1 hover:bg-slate-700 rounded bg-slate-800'
+            className='px-2 py-1 hover:bg-slate-700 rounded bg-slate-800 disabled:cursor-not-allowed disabled:text-red-500/50 disabled:bg-slate-800/50'
             onClick={() => {
               const error = AssignmentSchema.safeParse(form);
               if (!error.success) {
@@ -218,6 +216,7 @@ const CreateModal: React.FC<Modal> = ({ isOpen, onClose, id, type }) => {
                 projectId: id,
               });
             }}
+            disabled={isLoading}
           >
             Create
           </button>

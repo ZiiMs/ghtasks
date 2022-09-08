@@ -1,13 +1,10 @@
-import { ProjectRouter } from '@/server/router/project';
 import { Type } from '@prisma/client';
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
 import { BiTask } from 'react-icons/bi';
-import { FaArrowCircleDown, FaGithub, FaTasks } from 'react-icons/fa';
-import Modal from '../modals';
+import { FaTasks } from 'react-icons/fa';
 import CreateModal from '../modals/createModal';
-import Toasts from '../toasts';
 
 const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
   const [focused, setFocused] = useState(false);
@@ -80,16 +77,16 @@ const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
             />
           </span>
         </button>
-        <div className={classNames(focused ? 'visible' : 'hidden', 'mt-1')}>
+        <div className={classNames(focused ? 'visible' : 'hidden', 'mt-1 absolute ')}>
           <AiFillCaretUp
             className={classNames(
-              'absolute top-[2.30rem] z-20 right-1 text-slate-900'
+              'absolute  z-20 left-12 top-[-0.35rem] text-slate-900'
             )}
           />
           <div
             className={classNames(
               `absolute shadow z-10 max-h-48 w-fit mt-1 bg-slate-900 p-1`,
-              ` top-100  right-0 rounded overflow-y-auto scrollbar-thin scrollbar-thumb-slate-600`
+              `rounded overflow-y-auto scrollbar-thin scrollbar-thumb-slate-600`
             )}
           >
             <div className='flex flex-col w-full rounded bg-slate-700'>
