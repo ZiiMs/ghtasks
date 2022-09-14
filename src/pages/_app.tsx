@@ -15,10 +15,10 @@ const MyApp: AppType = ({
   return (
     <>
       <Head>
-        <title>Github Tasks</title>
+        <title>Github Notes</title>
         <meta
           name='description'
-          content='Tasks & Todods attatched to your github repos.'
+          content='Notes & Todods attatched to your github repos.'
         />
       </Head>
       <SessionProvider session={session}>

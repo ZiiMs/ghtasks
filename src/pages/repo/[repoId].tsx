@@ -1,12 +1,13 @@
 import ContextMenu from '@/components/contextMenu';
+import Dropdown from '@/components/dropdown';
 import Loading from '@/components/loading';
 import Modal from '@/components/modals';
-import NewTasksDropdown from '@/components/NewButton';
+import NewNotesDropdown from '@/components/NewButton';
 import Toasts from '@/components/toasts';
-import { formatStatus } from '@/utils/functions';
+import { formatStatus, getEnumKeys } from '@/utils/functions';
 import { trpc } from '@/utils/trpc';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { Assignments } from '@prisma/client';
+import { Assignments, Status, Type } from '@prisma/client';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -32,6 +33,7 @@ const RepoTodos: React.FC = () => {
   const ref = useRef<HTMLButtonElement>(null);
   const [showModal, setShowModal] = useState(false);
   const [confirmInput, setConfirmInput] = useState('');
+  const [openStatusDropdown, setOpenStatusDropdown] = useState(false);
   const router = useRouter();
   const [parent] = useAutoAnimate<HTMLDivElement>();
   const [filter, setFilter] = useState('');
@@ -214,21 +216,21 @@ const RepoTodos: React.FC = () => {
                   }
                 }}
               >
-                Tasks
+                Notes
               </button>
               <button
                 className={classNames(
                   'px-2 py-1 hover:cursor-pointer rounded-r-md hover:bg-opacity-60 font-medium',
-                  filter === 'task'
+                  filter === 'note'
                     ? 'bg-red-500 text-slate-900'
                     : 'text-red-500 bg-slate-900'
                 )}
                 onClick={(e) => {
                   e.preventDefault();
-                  if (filter === 'task') {
+                  if (filter === 'note') {
                     setFilter('');
                   } else {
-                    setFilter('task');
+                    setFilter('note');
                   }
                 }}
               >
@@ -236,7 +238,7 @@ const RepoTodos: React.FC = () => {
               </button>
             </div>
             <div>
-              <NewTasksDropdown id={project.id} />
+              <NewNotesDropdown id={project.id} />
             </div>
           </div>
           <div className='flex flex-col items-start justify-start h-full'>
@@ -270,23 +272,46 @@ const RepoTodos: React.FC = () => {
                           <div>{assignment.description}</div>
                         </div>
                         <div className='flex flex-col items-end'>
-                          <div
-                            className={classNames(
-                              `rounded-md w-fit bg-${assignment.statusColor} font-bold px-2`,
-                              splitStatusColor(assignment.statusColor)
-                                .variant >= 500
-                                ? `text-${
-                                    splitStatusColor(assignment.statusColor)
-                                      .color
-                                  }-200`
-                                : `text-${
-                                    splitStatusColor(assignment.statusColor)
-                                      .color
-                                  }-900`
-                            )}
-                          >
-                            {formatStatus(assignment.status)}
+                          <div>
+                            <div
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setOpenStatusDropdown(true);
+                              }}
+                              className={classNames(
+                                `rounded-md w-fit bg-${assignment.statusColor} font-bold px-2`,
+                                splitStatusColor(assignment.statusColor)
+                                  .variant >= 500
+                                  ? `text-${
+                                      splitStatusColor(assignment.statusColor)
+                                        .color
+                                    }-200`
+                                  : `text-${
+                                      splitStatusColor(assignment.statusColor)
+                                        .color
+                                    }-900`
+                              )}
+                            >
+                              {formatStatus(assignment.status)}
+                            </div>
+                            <Dropdown
+                              open={openStatusDropdown}
+                              caret={true}
+                              onClose={() => setOpenStatusDropdown(false)}
+                            >
+                              <ul className='space-y-1'>
+                                {getEnumKeys(Status).map((key) => (
+                                  <li
+                                    key={key}
+                                    className='p-1 bg-slate-700 rounded'
+                                  >
+                                    {formatStatus(Status[key])}
+                                  </li>
+                                ))}
+                              </ul>
+                            </Dropdown>
                           </div>
+
                           <div>{assignment.updatedAt.toLocaleDateString()}</div>
                         </div>
                       </div>
@@ -308,7 +333,7 @@ const RepoTodos: React.FC = () => {
               <span className='font-semibold italic select-none'>
                 {project.name}
               </span>
-              . All tasks and todos and will be lost forever.
+              . All Notes and todos and will be lost forever.
             </span>
             <label className='py-2'>
               Please type{' '}

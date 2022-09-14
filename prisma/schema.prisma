@@ -14,7 +14,13 @@ datasource db {
 
 enum Type {
     TODO
-    TASK
+    NOTE
+}
+
+enum Priority {
+    LOW    @map("Low Priority")
+    MEDIUM @map("Medium Priority")
+    HIGH   @map("High Priority")
 }
 
 enum Status {
@@ -71,8 +77,8 @@ model Project {
     name        String
     repoId      Int           @unique
     description String?
-    Users       User[] 
-    Assignments Assignments[] 
+    Users       User[]
+    Assignments Assignments[]
 }
 
 model Assignments {
@@ -82,6 +88,8 @@ model Assignments {
     status      Status   @default(OPEN)
     statusColor String   @default("stone-100")
     type        Type     @default(TODO)
+    priority    Priority @default(LOW)
+    completed   Boolean  @default(false)
     Project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
     projectId   Int
     createdAt   DateTime @default(now())

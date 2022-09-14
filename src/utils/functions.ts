@@ -21,3 +21,8 @@ export const formatStatus = (status: Status) => {
   }
 };
 
+export const getEnumKeys = <T>(Enum: T): Array<keyof typeof Enum> => {
+  // @ts-ignore
+  return Object.keys(Enum) as Array<keyof typeof Enum>;
+};
+

@@ -6,11 +6,11 @@ import { BiTask } from 'react-icons/bi';
 import { FaTasks } from 'react-icons/fa';
 import CreateModal from '../modals/createModal';
 
-const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
+const NewNotesDropdown: React.FC<{ id: number }> = ({ id }) => {
   const [focused, setFocused] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [showModal, setShowModal] = useState(false);
-  const [type, setType] = useState<Type>(Type.TASK);
+  const [type, setType] = useState<Type>(Type.NOTE);
 
   useEffect(() => {
     const bodyClick = (e: MouseEvent) => {
@@ -98,14 +98,14 @@ const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
                       e.preventDefault();
 
                       setFocused(false);
-                      setType(Type.TASK);
+                      setType(Type.NOTE);
                       setShowModal(true);
 
                       console.log('Settings !');
                     }}
                   >
                     <BiTask className='group-hover:animate-wiggle' />
-                    Tasks
+                    Notes
                   </div>
                 </div>
               </div>
@@ -135,5 +135,5 @@ const NewTasksDropdown: React.FC<{ id: number }> = ({ id }) => {
   );
 };
 
-export default NewTasksDropdown;
+export default NewNotesDropdown;
 

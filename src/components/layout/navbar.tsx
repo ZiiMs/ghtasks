@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
           <Link href={'/'} passHref className='flex'>
             <button className='items-center gap-1 flex flex-shrink-0 h-full hover:bg-slate-800 px-2 rounded-md hover:text-red-600 focus:outline-2 focus:outline-red-500 focus:outline'>
               <FaGithub />
-              Tasks
+              Notes
             </button>
           </Link>
         </div>

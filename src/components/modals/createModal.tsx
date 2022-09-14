@@ -1,4 +1,4 @@
-import { formatStatus } from '@/utils/functions';
+import { formatStatus, getEnumKeys } from '@/utils/functions';
 import { trpc } from '@/utils/trpc';
 import { Status, Type } from '@prisma/client';
 import classNames from 'classnames';
@@ -98,15 +98,11 @@ const CreateModal: React.FC<Modal> = ({ isOpen, onClose, id, type }) => {
     return `bg-${color}-${variant}`;
   };
 
-  const getStatusKeys = () => {
-    return Object.keys(Status) as Array<keyof typeof Status>;
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className='flex flex-col w-full h-full'>
         <h1 className='text-xl font-bold text-center'>
-          {type === Type.TASK ? 'Task ' : 'Todo '}Modal
+          {type === Type.NOTE ? 'Note ' : 'Todo '}Modal
         </h1>
         <div className='w-full border-t-[1px] border-solid mt-2 border-slate-800'></div>
         <div className='flex flex-row'>
@@ -148,7 +144,7 @@ const CreateModal: React.FC<Modal> = ({ isOpen, onClose, id, type }) => {
               }}
               className='p-1 text-sm bg-transparent rounded outline-1 border-slate-700 outline-red-500 outline'
             >
-              {getStatusKeys().map((key) => (
+              {getEnumKeys(Status).map((key) => (
                 <option className='bg-slate-900 ' key={key} value={Status[key]}>
                   {formatStatus(Status[key])}
                 </option>

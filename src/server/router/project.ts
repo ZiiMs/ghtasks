@@ -98,10 +98,10 @@ export const ProjectRouter = createProtectedRouter()
           ...repos,
         };
 
-        // const {"0": Project, "1": Tasks, "2": Todos} = await Promise.all([repos, repos.Tasks(), repos.Todos()]);
+        // const {"0": Project, "1": Notes, "2": Todos} = await Promise.all([repos, repos.Notes(), repos.Todos()]);
         // return {
         //   ...Project,
-        //   Tasks: Tasks ?? [],
+        //   Notes: Notes ?? [],
         //   Todos: Todos ?? [],
 
         // };
