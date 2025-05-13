@@ -1,12 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  /* body {
-    @apply bg-slate-800;
-  } */
-  html {
-    @apply text-red-500
-  }
+@theme {
+	--font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+@source inline("(bg|border|outline|text)-(stone|red|yellow|green|blue|indigo|purple|pink)-(100|200|300|400|500|600|700|800|900)");
