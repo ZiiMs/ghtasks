@@ -3,7 +3,6 @@ import "~/styles/globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
-import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { auth } from "~/server/auth";
 import { TRPCReactProvider } from "~/trpc/react";

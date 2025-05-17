@@ -1,9 +1,7 @@
-import Link from "next/link";
 
-import { LatestPost } from "~/app/_components/post";
 import ProjectData from "~/app/_components/project";
 import { auth } from "~/server/auth";
-import { HydrateClient, api } from "~/trpc/server";
+import { api } from "~/trpc/server";
 
 export default async function ProjectId({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: repoid } = await params;
