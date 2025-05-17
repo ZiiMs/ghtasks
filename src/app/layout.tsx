@@ -3,6 +3,9 @@ import "~/styles/globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
+import { Suspense } from "react";
+import { Toaster } from "react-hot-toast";
+import { auth } from "~/server/auth";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Navbar } from "./_components/navbar";
 
@@ -17,9 +20,11 @@ const geist = Geist({
 	variable: "--font-geist-sans",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
+	const session = await auth();
+
 	return (
 		<html lang="en" className={`${geist.variable}`}>
 			<body>
@@ -27,13 +32,15 @@ export default function RootLayout({
 					<div className="flex w-full flex-col sm:h-auto md:h-screen">
 						<div className="-z-20 fixed h-full w-full bg-slate-800 " />
 						<div
-							className={"-z-10 fixed inset-0 h-full w-full bg-[url(/img/grid.svg)] bg-center [mask-image:radial-gradient(rgba(241,245,249,0.1),rgba(148,163,184,1));]"}
+							className={
+								"-z-10 fixed inset-0 h-full w-full bg-[url(/img/grid.svg)] bg-center [mask-image:radial-gradient(rgba(241,245,249,0.1),rgba(148,163,184,1));]"
+							}
 						/>
-						<Navbar />
+						<Navbar session={session} />
 
-						<div className="container mx-auto h-full w-full">
-							<div className="h-full w-full p-4">{children}</div>
-							{/* <Toaster /> */}
+						<div className="container mx-auto">
+							{children}
+							<Toaster />
 						</div>
 					</div>
 				</TRPCReactProvider>

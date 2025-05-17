@@ -41,6 +41,12 @@ model Project {
     name        String
     repoId      Int           @unique
     description String?
+    ownerName   String
+    ownerAvatar String
+    branch      String
+    stars       Int
+    forks       Int
+    url         String
     Users       User[]
     Assignments Assignments[]
 }

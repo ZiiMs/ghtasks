@@ -3,6 +3,74 @@
 @theme {
 	--font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+	--animate-wiggle: wiggle 1400ms ease-in-out 1;
+	--animate-enter: enter 150ms linear 1 forwards;
+	--animate-leave: leave 150ms linear 1 forwards;
+	--animate-modelBackdrop: blurBackdrop 150ms linear 1 forwards;
+	--animate-indicator: indicator 0.35s 2.5s cubic-bezier(0.21, 1.02, 0.73, 1)
+		forwards;
+
+	@keyframes wiggle {
+		0%,
+		100% {
+			transform: rotate(0deg);
+		}
+		50% {
+			transform: rotate(45deg);
+		}
+	}
+
+	@keyframes enter {
+		from {
+			opacity: 0;
+			transform: scale(0.5);
+			transition: all 150ms;
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+			transition: all 150ms;
+		}
+	}
+	@keyframes blurBackdrop {
+		from {
+			opacity: 0;
+			transition: all 150ms;
+		}
+		to {
+			opacity: 0.7;
+			transition: all 150ms;
+		}
+	}
+	@keyframes indicator {
+		from {
+			opacity: 0;
+			transform: scale(0);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+	@keyframes leave {
+		from {
+			opacity: 1;
+			transform: scale(1);
+			transition: all 150ms;
+		}
+		to {
+			opacity: 0;
+			transform: scale(0.5);
+			transition: all 150ms;
+		}
+	}
 }
 
-@source inline("(bg|border|outline|text)-(stone|red|yellow|green|blue|indigo|purple|pink)-(100|200|300|400|500|600|700|800|900)");
+@source inline('{hover:,}{bg,border,outline,text}-{stone,red,yellow,green,blue,indigo,purple,pink}-{100..900..100}');
+
+@layer base {
+	html {
+		@apply text-red-500;
+	}
+}
