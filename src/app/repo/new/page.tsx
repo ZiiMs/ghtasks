@@ -17,7 +17,7 @@ export default async function NewProject() {
 
 	return (
 		<HydrateClient>
-			<div className="flex w-full items-center justify-center">
+			<div className="flex h-screen w-full items-center justify-center">
 				{repos ? (
 					<div className="flex w-full items-center justify-center">
 						<RepoList repo={repos} />

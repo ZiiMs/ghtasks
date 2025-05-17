@@ -3,9 +3,11 @@ import type { Session } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FaGithub } from "react-icons/fa";
 
 export function Navbar({ session }: { session: Session | null }) {
+	const router = useRouter();
 	return (
 		<nav className="navbar w-full bg-slate-900 ">
 			<div className="container z-10 mx-auto flex h-full w-full flex-row items-center justify-between px-4 py-2">
@@ -38,6 +40,8 @@ export function Navbar({ session }: { session: Session | null }) {
 								onClick={() => {
 									console.log("Tester");
 									signOut();
+									router.push("/");
+
 								}}
 							>
 								<Image
